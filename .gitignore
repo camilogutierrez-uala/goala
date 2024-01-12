@@ -1,0 +1,21 @@
+
+# IntelliJ project files
+.idea
+*.iml
+
+# Build output
+out
+gen
+
+# Basic gitignore for Go package
+*.log
+vendor/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.prof
+
+# Dependency directories (remove the comment below if you want to check in your dependencies)
+vendor/
