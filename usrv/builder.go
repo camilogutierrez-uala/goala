@@ -1,14 +1,10 @@
 package usrv
 
-import (
-	"github.com/aws/aws-lambda-go/lambda"
-)
-
 type Builder[I any, O any] struct {
-	middlewares         []Middleware[I, O]
-	server              Server[I, O]
-	adapter             AdapterFn[I]
-	decorateInterceptor func(any) any
+	middlewares          []Middleware[I, O]
+	server               Server[I, O]
+	adapter              AdapterFn[I]
+	interceptorDecorator func(any) any
 }
 
 func NewBuilder[I any, O any](srv Server[I, O]) *Builder[I, O] {
@@ -29,6 +25,11 @@ func (b *Builder[I, O]) WithAdapter(fn AdapterFn[I]) *Builder[I, O] {
 	return b
 }
 
+func (b *Builder[I, O]) WithInterceptorDecoration(fn func(any) any) *Builder[I, O] {
+	b.interceptorDecorator = fn
+	return b
+}
+
 func (b *Builder[I, O]) Handler() *Handler[I, O] {
 	return NewHandler(
 		b.server,
@@ -36,7 +37,7 @@ func (b *Builder[I, O]) Handler() *Handler[I, O] {
 	)
 }
 
-func (b *Builder[I, O]) Serve() {
+func (b *Builder[I, O]) Build() any {
 	if b.adapter == nil {
 		b.adapter = AdaptJSON[I]
 	}
@@ -46,13 +47,9 @@ func (b *Builder[I, O]) Serve() {
 		b.adapter,
 	)
 
-	if b.decorateInterceptor == nil {
-		b.decorateInterceptor = func(a any) any {
-			return a
-		}
+	if b.interceptorDecorator == nil {
+		return interceptor
 	}
 
-	lambda.Start(
-		b.decorateInterceptor(interceptor),
-	)
+	return b.interceptorDecorator(interceptor)
 }

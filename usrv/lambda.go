@@ -1,25 +1,29 @@
 package usrv
 
-func Serve[I any, O any](srv Server[I, O], middleware ...Middleware[I, O]) {
-	build := NewBuilder[I, O](
+import (
+	"github.com/aws/aws-lambda-go/lambda"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda"
+)
+
+func baseLambda[I any, O any](srv Server[I, O], middleware ...Middleware[I, O]) *Builder[I, O] {
+	builder := NewBuilder[I, O](
 		srv,
 	).WithMiddlewares(
 		Logger[I, O],
 	).WithMiddlewares(
 		middleware...,
 	)
-
-	build.Serve()
+	return builder
 }
 
-func ServeHTTP[I any, O any](srv Server[I, O], middleware ...Middleware[I, O]) {
-	build := NewBuilder[I, O](
-		srv,
-	).WithMiddlewares(
-		Logger[I, O],
-	).WithMiddlewares(
-		middleware...,
-	)
+func LambdaServe[I any, O any](srv Server[I, O], middleware ...Middleware[I, O]) {
+	lambda.Start(baseLambda(srv, middleware...).Build())
+}
 
-	build.ServeHTTP()
+func LambdaOTELServe[I any, O any](srv Server[I, O], opts []otellambda.Option, middleware ...Middleware[I, O]) {
+	builder := baseLambda(srv, middleware...).
+		WithInterceptorDecoration(
+			OTELDecorator(opts...),
+		)
+	lambda.Start(builder.Build())
 }
