@@ -8,7 +8,6 @@ const (
 	LevelDebug Level = iota + 1
 	LevelInfo
 	LevelError
-	LevelFatal
 )
 
 type (
@@ -20,6 +19,5 @@ type (
 		Debug(msg string)
 		Info(msg string)
 		Error(msg string)
-		Fatal(msg string)
 	}
 )

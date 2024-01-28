@@ -10,8 +10,8 @@ var contextAdapter = func(ctx context.Context, l logger.Logger) logger.Logger {
 	trx, ok := lambdacontext.FromContext(ctx)
 	if ok {
 		return l.
-			With("AWS_REQUEST_ID", trx.AwsRequestID).
-			With("FUNCTION_ARN", trx.InvokedFunctionArn)
+			With("request.awsRequestId", trx.AwsRequestID).
+			With("function.arn", trx.InvokedFunctionArn)
 	}
 	return l
 }

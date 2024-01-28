@@ -2,14 +2,14 @@ package ulog
 
 import (
 	"context"
-	"github.com/camilogutierrez-uala/goala/ulog/internal/pkg/zap"
+	"github.com/camilogutierrez-uala/goala/ulog/internal/pkg/slog"
 	"github.com/camilogutierrez-uala/goala/ulog/logger"
 	"io"
 	"os"
 )
 
 var (
-	_loggerBuilder           = zap.NewZapLogger
+	_loggerBuilder           = slog.NewSlogLogger
 	_defaultLevel            = logger.LevelInfo
 	_defaultWriter io.Writer = os.Stdout
 	_defaultLog              = func() logger.Logger {
@@ -63,8 +63,4 @@ func Info(msg string) {
 
 func Error(msg string) {
 	_defaultLog.Error(msg)
-}
-
-func Fatal(msg string) {
-	_defaultLog.Fatal(msg)
 }
