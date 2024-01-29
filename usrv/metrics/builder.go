@@ -2,7 +2,7 @@ package metrics
 
 import (
 	"context"
-	"github.com/camilogutierrez-uala/goala/usrv"
+	"github.com/Bancar/goala/usrv"
 )
 
 type Meter[I any, O any] func(ctx context.Context, in *I, out *O, err error)

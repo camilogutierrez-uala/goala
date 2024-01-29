@@ -1,7 +1,14 @@
 package main
 
-import "github.com/camilogutierrez-uala/goala/usrv/example/cmd/cases"
+import (
+	"github.com/Bancar/goala/usrv"
+	"github.com/Bancar/goala/usrv/example/service"
+)
 
 func main() {
-	cases.HTTPLocalLambda()
+	HTTPLocalLambda()
+}
+
+func HTTPLocalLambda() {
+	usrv.LocalHTTP(service.New().Service, true)
 }

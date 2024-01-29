@@ -1,4 +1,4 @@
-module github.com/camilogutierrez-uala/goala/usrv
+module github.com/Bancar/goala/usrv
 
 go 1.21
 

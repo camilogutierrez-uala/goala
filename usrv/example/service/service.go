@@ -3,7 +3,9 @@ package service
 import (
 	"context"
 	"errors"
+	"github.com/Bancar/goala/usrv"
 	"strings"
+	"time"
 )
 
 type (
@@ -38,6 +40,12 @@ func (a *Service) Service(ctx context.Context, in *Request) (*Response, error) {
 		return nil, errors.New("internal service error")
 	}
 
+	func() {
+		_, span := usrv.Tracer().Start(ctx, "DB")
+		defer span.End()
+
+		time.Sleep(1 * time.Millisecond)
+	}()
 	return &Response{
 		Status:   "OK",
 		Terminal: "terminal-123",
