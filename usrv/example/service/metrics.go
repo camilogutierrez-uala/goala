@@ -2,11 +2,11 @@ package service
 
 import (
 	"context"
+	"github.com/Bancar/goala/usrv"
 	"github.com/Bancar/uala-bis-go-dependencies/v2/aws/session"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/cloudwatch"
 	"github.com/camilogutierrez-uala/goala/ulog"
-	"github.com/camilogutierrez-uala/goala/usrv"
 )
 
 func Metrics() []usrv.Middleware[Request, Response] {
