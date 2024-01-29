@@ -4,6 +4,7 @@ type Builder[I any, O any] struct {
 	middlewares      []Middleware[I, O]
 	service          Service[I, O]
 	isErrorOnly      bool
+	isBatch          bool
 	handlerDecorator func(any) any
 }
 
@@ -25,6 +26,11 @@ func (b *Builder[I, O]) WithOnlyError() *Builder[I, O] {
 	return b
 }
 
+func (b *Builder[I, O]) WithBatch() *Builder[I, O] {
+	b.isBatch = true
+	return b
+}
+
 func (b *Builder[I, O]) WithHandlerDecorator(fn func(any) any) *Builder[I, O] {
 	b.handlerDecorator = fn
 	return b
@@ -38,11 +44,17 @@ func (b *Builder[I, O]) Handler() *Handler[I, O] {
 }
 
 func (b *Builder[I, O]) Build() any {
+	h := b.Handler()
+
+	if b.isBatch {
+		h.Batch()
+	}
+
 	var handler any
 	if b.isErrorOnly {
-		handler = b.Handler().EventHandlerWithOnlyError
+		handler = h.EventHandlerWithOnlyError
 	} else {
-		handler = b.Handler().EventHandlerWithResponse
+		handler = h.EventHandlerWithResponse
 	}
 
 	if b.handlerDecorator == nil {

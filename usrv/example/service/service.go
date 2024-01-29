@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"errors"
+	"strings"
 )
 
 type (
@@ -9,8 +11,16 @@ type (
 	}
 
 	Request struct {
-		PaymentMethod string
-		Amount        int64
+		Amount        float64        `dynamodbav:"Amount"`
+		Message       string         `dynamodbav:"Message"`
+		CardData      []byte         `dynamodbav:"CardData"`
+		Available     bool           `dynamodbav:"Available"`
+		Null          any            `dynamodbav:"Null"`
+		ChangeDetails []any          `dynamodbav:"ChangeDetails"`
+		Detail        map[string]any `dynamodbav:"Detal"`
+		Terminals     []float64      `dynamodbav:"Terminals"`
+		Products      []string       `dynamodbav:"Products"`
+		Token         [][]byte       `dynamodbav:"Token"`
 	}
 
 	Response struct {
@@ -24,5 +34,12 @@ func New() *Service {
 }
 
 func (a *Service) Service(ctx context.Context, in *Request) (*Response, error) {
-	return &Response{}, nil
+	if strings.Contains(in.Message, "Hello, fail!") {
+		return nil, errors.New("internal service error")
+	}
+
+	return &Response{
+		Status:   "OK",
+		Terminal: "terminal-123",
+	}, nil
 }

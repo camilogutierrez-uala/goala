@@ -70,6 +70,7 @@ func (e *eventMultiMessage[I, O]) process(ctx context.Context) error {
 			return err
 		}
 
+		ctx := context.WithValue(ctx, "batch_message_index", i)
 		if _, err := e.srv(ctx, in); err != nil {
 			return err
 		}
@@ -84,7 +85,7 @@ func (e *eventMultiMessage[I, O]) batch(ctx context.Context) (any, error) {
 			e.event.Failure(i)
 			continue
 		}
-
+		ctx := context.WithValue(ctx, "batch_message_index", i)
 		if _, err := e.srv(ctx, in); err != nil {
 			e.event.Failure(i)
 			continue

@@ -1,16 +1,18 @@
-package otel
+package usrv
 
 import (
 	"context"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda/xrayconfig"
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/trace"
 
 	"log"
 )
 
 var (
 	lambdaOptions []otellambda.Option
+	tracer        trace.Tracer
 	shutdownFn    []func() error
 	ctx           = context.Background()
 )
@@ -33,7 +35,7 @@ func UseTrace() error {
 	return err
 }
 
-func Shutdown() {
+func OTELShutdown() {
 	for _, shutdown := range shutdownFn {
 		if err := shutdown(); err != nil {
 			log.Printf(err.Error())
@@ -41,10 +43,21 @@ func Shutdown() {
 	}
 }
 
-func LambdaOptions() []otellambda.Option {
+func OTELLambdaOptions() []otellambda.Option {
 	if len(lambdaOptions) == 0 {
 		log.Fatal("lambda options are empty")
 	}
 
 	return lambdaOptions
+}
+
+func SetTrancer(tr trace.Tracer) {
+	tracer = tr
+}
+
+func Tracer() trace.Tracer {
+	if tracer == nil {
+		tracer = otel.Tracer("default")
+	}
+	return tracer
 }

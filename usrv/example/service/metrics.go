@@ -19,7 +19,7 @@ func Metrics() []usrv.Middleware[Request, Response] {
 				&cloudwatch.PutMetricDataInput{
 					MetricData: []*cloudwatch.MetricDatum{
 						{
-							MetricName: aws.String(in.PaymentMethod),
+							MetricName: aws.String(in.Message),
 							Value:      aws.Float64(1),
 						},
 					},

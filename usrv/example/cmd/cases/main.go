@@ -1,4 +1,4 @@
-package main
+package cases
 
 import (
 	"context"
@@ -6,12 +6,7 @@ import (
 	"errors"
 	"github.com/camilogutierrez-uala/goala/usrv"
 	"github.com/camilogutierrez-uala/goala/usrv/example/service"
-	"github.com/camilogutierrez-uala/goala/usrv/otel"
 )
-
-func main() {
-	HTTPLocalLambda()
-}
 
 func EventSQS() {
 	raw := `
@@ -837,28 +832,7 @@ func EventAgnostic() {
 }
 
 func HTTPLocalLambda() {
-	type DynamoDBItem struct {
-		Number    float64        `dynamodbav:"Number"`
-		String    string         `dynamodbav:"String"`
-		Binary    []byte         `dynamodbav:"Binary"`
-		Boolean   bool           `dynamodbav:"Boolean"`
-		Null      any            `dynamodbav:"Null"`
-		List      []any          `dynamodbav:"List"`
-		Map       map[string]any `dynamodbav:"Map"`
-		NumberSet []float64      `dynamodbav:"NumberSet"`
-		StringSet []string       `dynamodbav:"StringSet"`
-		BinarySet [][]byte       `dynamodbav:"BinarySet"`
-	}
-
-	srv := func(ctx context.Context, in *DynamoDBItem) (*any, error) {
-		var asd any = "dsadsadasd"
-		if in.String == "Hello, fail!" {
-			return nil, errors.New("error")
-		}
-		return &asd, nil
-	}
-
-	usrv.LocalHTTP(srv, true)
+	usrv.LocalHTTP(service.New().Service, true)
 }
 
 func BaseLambda() {
@@ -868,11 +842,11 @@ func BaseLambda() {
 
 func OtelLambda() {
 	srv := service.New()
-	if err := otel.UseTrace(); err != nil {
+	if err := usrv.UseTrace(); err != nil {
 		panic(err)
 		return
 	}
-	defer otel.Shutdown()
+	defer usrv.OTELShutdown()
 
-	usrv.LambdaOTELServe(srv.Service, otel.LambdaOptions(), service.Metrics()...)
+	usrv.LambdaOTELServe(srv.Service, usrv.OTELLambdaOptions(), service.Metrics()...)
 }
