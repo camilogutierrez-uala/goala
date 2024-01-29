@@ -2,18 +2,17 @@ package service
 
 import (
 	"context"
-	"github.com/Bancar/goala/usrv"
-	"github.com/Bancar/goala/usrv/metrics"
 	"github.com/Bancar/uala-bis-go-dependencies/v2/aws/session"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/cloudwatch"
 	"github.com/camilogutierrez-uala/goala/ulog"
+	"github.com/camilogutierrez-uala/goala/usrv"
 )
 
 func Metrics() []usrv.Middleware[Request, Response] {
 	sess := session.GetSession()
 	cw := cloudwatch.New(sess)
-	return metrics.NewMeter[Request, Response](
+	return usrv.NewMeter[Request, Response](
 		func(ctx context.Context, in *Request, out *Response, err error) {
 			if _, err := cw.PutMetricData(
 				&cloudwatch.PutMetricDataInput{

@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 	"errors"
-	"github.com/Bancar/goala/usrv"
+	"github.com/camilogutierrez-uala/goala/usrv"
 	"strings"
 	"time"
 )

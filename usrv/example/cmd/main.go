@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/Bancar/goala/usrv"
-	"github.com/Bancar/goala/usrv/example/service"
+	"github.com/camilogutierrez-uala/goala/usrv"
+	"github.com/camilogutierrez-uala/goala/usrv/example/service"
 )
 
 func main() {
