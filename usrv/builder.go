@@ -1,15 +1,15 @@
 package usrv
 
 type Builder[I any, O any] struct {
-	middlewares          []Middleware[I, O]
-	server               Server[I, O]
-	adapter              AdapterFn[I]
-	interceptorDecorator func(any) any
+	middlewares      []Middleware[I, O]
+	service          Service[I, O]
+	isErrorOnly      bool
+	handlerDecorator func(any) any
 }
 
-func NewBuilder[I any, O any](srv Server[I, O]) *Builder[I, O] {
+func NewBuilder[I any, O any](srv Service[I, O]) *Builder[I, O] {
 	return &Builder[I, O]{
-		server: srv,
+		service: srv,
 	}
 }
 
@@ -20,36 +20,34 @@ func (b *Builder[I, O]) WithMiddlewares(middlewares ...Middleware[I, O]) *Builde
 	return b
 }
 
-func (b *Builder[I, O]) WithAdapter(fn AdapterFn[I]) *Builder[I, O] {
-	b.adapter = fn
+func (b *Builder[I, O]) WithOnlyError() *Builder[I, O] {
+	b.isErrorOnly = true
 	return b
 }
 
-func (b *Builder[I, O]) WithInterceptorDecoration(fn func(any) any) *Builder[I, O] {
-	b.interceptorDecorator = fn
+func (b *Builder[I, O]) WithHandlerDecorator(fn func(any) any) *Builder[I, O] {
+	b.handlerDecorator = fn
 	return b
 }
 
 func (b *Builder[I, O]) Handler() *Handler[I, O] {
 	return NewHandler(
-		b.server,
+		b.service,
 		b.middlewares...,
 	)
 }
 
 func (b *Builder[I, O]) Build() any {
-	if b.adapter == nil {
-		b.adapter = AdaptJSON[I]
+	var handler any
+	if b.isErrorOnly {
+		handler = b.Handler().EventHandlerWithOnlyError
+	} else {
+		handler = b.Handler().EventHandlerWithResponse
 	}
 
-	interceptor := Interceptor(
-		b.Handler(),
-		b.adapter,
-	)
-
-	if b.interceptorDecorator == nil {
-		return interceptor
+	if b.handlerDecorator == nil {
+		return handler
 	}
 
-	return b.interceptorDecorator(interceptor)
+	return b.handlerDecorator(handler)
 }

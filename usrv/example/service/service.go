@@ -2,11 +2,10 @@ package service
 
 import (
 	"context"
-	"github.com/camilogutierrez-uala/goala/usrv"
 )
 
 type (
-	service struct {
+	Service struct {
 	}
 
 	Request struct {
@@ -20,10 +19,10 @@ type (
 	}
 )
 
-func New() usrv.Server[Request, Response] {
-	return &service{}
+func New() *Service {
+	return &Service{}
 }
 
-func (a *service) Service(ctx context.Context, in *Request) (*Response, error) {
+func (a *Service) Service(ctx context.Context, in *Request) (*Response, error) {
 	return &Response{}, nil
 }

@@ -5,7 +5,7 @@ import (
 	"github.com/camilogutierrez-uala/goala/ulog"
 )
 
-func Logger[I any, O any](next HandlerFn[I, O]) HandlerFn[I, O] {
+func Logger[I any, O any](next Service[I, O]) Service[I, O] {
 	return func(ctx context.Context, in *I) (out *O, err error) {
 		defer func() {
 			log := ulog.With("event_handler_input", in)

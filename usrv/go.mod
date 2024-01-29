@@ -5,20 +5,27 @@ go 1.21
 require (
 	github.com/Bancar/uala-bis-go-dependencies/v2 v2.3.9
 	github.com/aws/aws-lambda-go v1.44.0
+	github.com/aws/aws-sdk-go v1.43.36
+	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.10.9
+	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.18.0
 	github.com/camilogutierrez-uala/goala/ulog v0.0.0-20240112191322-218b8c1789cc
+	github.com/tidwall/gjson v1.17.0
 	go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda v0.46.1
 	go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda/xrayconfig v0.46.1
 	go.opentelemetry.io/otel v1.21.0
 )
 
 require (
-	github.com/aws/aws-sdk-go v1.43.36 // indirect
+	github.com/aws/aws-sdk-go-v2/service/dynamodbstreams v1.14.0 // indirect
+	github.com/aws/smithy-go v1.19.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
 	github.com/go-logr/logr v1.3.0 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
+	github.com/tidwall/match v1.1.1 // indirect
+	github.com/tidwall/pretty v1.2.0 // indirect
 	go.opentelemetry.io/contrib/detectors/aws/lambda v0.46.1 // indirect
 	go.opentelemetry.io/contrib/propagators/aws v1.21.1 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.21.0 // indirect

@@ -5,7 +5,7 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda"
 )
 
-func baseLambda[I any, O any](srv Server[I, O], middleware ...Middleware[I, O]) *Builder[I, O] {
+func baseLambda[I any, O any](srv Service[I, O], middleware ...Middleware[I, O]) *Builder[I, O] {
 	builder := NewBuilder[I, O](
 		srv,
 	).WithMiddlewares(
@@ -16,13 +16,13 @@ func baseLambda[I any, O any](srv Server[I, O], middleware ...Middleware[I, O]) 
 	return builder
 }
 
-func LambdaServe[I any, O any](srv Server[I, O], middleware ...Middleware[I, O]) {
+func LambdaServe[I any, O any](srv Service[I, O], middleware ...Middleware[I, O]) {
 	lambda.Start(baseLambda(srv, middleware...).Build())
 }
 
-func LambdaOTELServe[I any, O any](srv Server[I, O], opts []otellambda.Option, middleware ...Middleware[I, O]) {
+func LambdaOTELServe[I any, O any](srv Service[I, O], opts []otellambda.Option, middleware ...Middleware[I, O]) {
 	builder := baseLambda(srv, middleware...).
-		WithInterceptorDecoration(
+		WithHandlerDecorator(
 			OTELDecorator(opts...),
 		)
 	lambda.Start(builder.Build())
